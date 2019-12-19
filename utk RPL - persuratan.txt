@@ -1,0 +1,38 @@
+instal XAMPP atau sejenisnya yg bisa menyediakan PHP versi 5.6
+import database terlampir. tambahkan/ubah kolom dan tabel bila perlu.
+instal CodeIgniter dan aturlah application/config/config.php dan application/config/database.php nya
+
+buat controller (boleh jadi satu file atau lebih) yang utk fungsi2 ini:
+
+
+halaman daftar template surat (bisa add, remove, edit)
+halaman untuk add/edit template surat, field nya:
+	nama
+	template
+	fields (kode, nama, keterangan)
+	jabatan yang menandatangani
+	prosedur (teks keterangan prosedur yg harus dilakukan terkait surat ini)
+halaman daftar pengajuan
+	menampilkan list pengajuan (user, tanggal pengajuan, jenis surat yg diajukan, status)
+	bisa add, remove (hanya bisa dilakukan oleh yg membuat pengajuan), view, edit, setujui dan print, tolak
+halaman utk add/edit pengajuan
+	pilihan template surat
+	field2 yang dibutuhkan utk template surat tersebut
+	catatan
+halaman utk view pengajuan
+	menampilkan surat WYSIWYG, catatan, tanggal pengajuan, dan status pengajuan
+halaman utk menolak pengajuan
+	alasan penolakan
+halaman log surat
+	berisi daftar email yg dikirim otomatis by system (dari, ke, tanggal, subject, isi, pengajuan yang terkait)
+	
+notifikasi email otomatis ke dan bila:
+	ke yg mengajukan bila:
+		pengajuan ditolak (tampilkan alasan)
+		pengajuan disetujui
+		pengajuan diedit (tampilkan apa perubahannya)
+	ke sekretariat bila:
+		ada pengajuan baru dibuat.
+		ada pengajuan yang belum disetujui atau ditolak setelah 3 hari.
+		
+		

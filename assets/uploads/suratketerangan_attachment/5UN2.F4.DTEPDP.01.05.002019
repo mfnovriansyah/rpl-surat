@@ -1,0 +1,426 @@
+-- phpMyAdmin SQL Dump
+-- version 4.9.0.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Dec 03, 2019 at 11:12 PM
+-- Server version: 10.3.16-MariaDB
+-- PHP Version: 7.1.30
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `rpl-surat`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keterangan`
+--
+
+CREATE TABLE `keterangan` (
+  `id` int(11) NOT NULL,
+  `jenis` int(11) NOT NULL COMMENT 'dari keterangan_jenis',
+  `user` int(11) NOT NULL COMMENT 'user yang mengajukan',
+  `no_surat` varchar(160) NOT NULL COMMENT 'dimasukkan oleh sekretariat',
+  `created` datetime NOT NULL COMMENT 'tgl pembuatan',
+  `isi_fields` text NOT NULL,
+  `teks` text NOT NULL,
+  `lampiran` varchar(160) NOT NULL COMMENT 'file lampiran',
+  `status` enum('Ditolak','Disetujui') NOT NULL COMMENT 'setelah disetujui, harap langsung ambil hardcopy nya ke sekretariat',
+  `check_status` text NOT NULL,
+  `catatan` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `keterangan`
+--
+
+INSERT INTO `keterangan` (`id`, `jenis`, `user`, `no_surat`, `created`, `isi_fields`, `teks`, `lampiran`, `status`, `check_status`, `catatan`) VALUES
+(193, 55, 192, '1/123/KP', '2019-12-04 05:06:52', 'Muhamad Fahriza Novriansyah,1706042951,Perusahaan bla bla di bla bla bla', '<p>Yth HRD Muhamad Fahriza Novriansyah (1706042951)</p><p>ingin KP di Perusahaan bla bla di bla bla bla</p>', '1123KP.jpg', 'Ditolak', '', 'OK');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `keterangan_jenis`
+--
+
+CREATE TABLE `keterangan_jenis` (
+  `id` int(11) NOT NULL,
+  `name` varchar(160) NOT NULL COMMENT 'nama surat',
+  `status` enum('Active','Inactive') NOT NULL DEFAULT 'Active',
+  `nomor` text NOT NULL,
+  `fields` text NOT NULL,
+  `jenis_text` text NOT NULL,
+  `hint` text NOT NULL,
+  `template` text NOT NULL,
+  `penandatangan` text NOT NULL COMMENT 'jabatan',
+  `prosedur` text NOT NULL COMMENT 'info prosedur/lampiran apa yang diperlukan sebelum membuat dan sesudah mendapatkan surat ini'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='jenis surat keterangan';
+
+--
+-- Dumping data for table `keterangan_jenis`
+--
+
+INSERT INTO `keterangan_jenis` (`id`, `name`, `status`, `nomor`, `fields`, `jenis_text`, `hint`, `template`, `penandatangan`, `prosedur`) VALUES
+(55, 'Surat KP', 'Active', '/123/KP', 'Nama,NPM,Perusahaan', 'text,text,textarea', 'isi Nama,isi NPM,Jelaskan Perusahaan', '<p>Yth HRD [[Nama]] ([[NPM]])</p><p>ingin KP di [[Perusahaan]]</p>', 'Kepala Departemen Teknik Elektro', '<p>1. harus gini</p><p>2. harus gitu</p>');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_surat`
+--
+
+CREATE TABLE `log_surat` (
+  `id` int(11) NOT NULL,
+  `dari` text NOT NULL COMMENT 'email yang mengajukan surat',
+  `id_user` int(11) NOT NULL COMMENT 'id user yang menerima surat',
+  `tanggal` datetime NOT NULL COMMENT 'tanggal surat dikirimkan',
+  `subject` text NOT NULL COMMENT 'subject surat yang dikirimkan',
+  `isi` text NOT NULL COMMENT 'subject surat yang dikirimkan',
+  `jenis_surat` int(11) NOT NULL COMMENT 'jenis surat yang dikirimkan'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `log_surat`
+--
+
+INSERT INTO `log_surat` (`id`, `dari`, `id_user`, `tanggal`, `subject`, `isi`, `jenis_surat`) VALUES
+(26, 'mfnovriansyah@gmail.com', 192, '2019-11-24 15:55:21', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 34),
+(27, 'mfnovriansyah@gmail.com', 1, '2019-11-24 16:31:23', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 36),
+(28, 'mfnovriansyah@gmail.com', 193, '2019-11-24 16:31:23', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 36),
+(29, 'mfnovriansyah@gmail.com', 1, '2019-11-24 16:34:12', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 36),
+(30, 'mfnovriansyah@gmail.com', 193, '2019-11-24 16:34:12', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 36),
+(31, 'mfnovriansyah@gmail.com', 1, '2019-11-24 16:34:36', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 36),
+(32, 'mfnovriansyah@gmail.com', 193, '2019-11-24 16:34:36', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 36),
+(33, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:11:19', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 37),
+(34, 'mfnovriansyah@gmail.com', 192, '2019-11-24 17:11:19', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 37),
+(35, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:33:25', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 37),
+(36, 'mfnovriansyah@gmail.com', 192, '2019-11-24 17:33:25', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 37),
+(37, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:34:09', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(38, 'mfnovriansyah@gmail.com', 0, '2019-11-24 17:34:09', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(39, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:34:40', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(40, 'mfnovriansyah@gmail.com', 0, '2019-11-24 17:34:40', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(41, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:47:27', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 38),
+(42, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:47:27', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 38),
+(43, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:50:15', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 38),
+(44, 'mfnovriansyah@gmail.com', 1, '2019-11-24 17:50:15', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 38),
+(45, 'mfnovriansyah@gmail.com', 1, '2019-11-24 18:02:46', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(46, 'mfnovriansyah@gmail.com', 0, '2019-11-24 18:02:46', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(47, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:16:13', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 42),
+(48, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:16:13', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 42),
+(49, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:29:44', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 43),
+(50, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:29:44', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 43),
+(51, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:29:50', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 43),
+(52, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:29:50', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 43),
+(53, 'mfnovriansyah@gmail.com', 1, '2019-11-24 23:46:53', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(54, 'mfnovriansyah@gmail.com', 0, '2019-11-24 23:46:53', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(55, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:22:34', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(56, 'mfnovriansyah@gmail.com', 193, '2019-11-25 08:22:34', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(57, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:23:10', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(58, 'mfnovriansyah@gmail.com', 193, '2019-11-25 08:23:10', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(59, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:24:26', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(60, 'mfnovriansyah@gmail.com', 192, '2019-11-25 08:24:26', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(61, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:27:00', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(62, 'mfnovriansyah@gmail.com', 192, '2019-11-25 08:27:00', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(63, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:28:41', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(64, 'mfnovriansyah@gmail.com', 193, '2019-11-25 08:28:41', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(65, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:31:13', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 45),
+(66, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:31:13', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 45),
+(67, 'mfnovriansyah@gmail.com', 1, '2019-11-25 08:34:56', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(68, 'mfnovriansyah@gmail.com', 0, '2019-11-25 08:34:56', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(69, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:25:14', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 43),
+(70, 'mfnovriansyah@gmail.com', 193, '2019-11-25 09:25:14', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 43),
+(71, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:31:26', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 44),
+(72, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:31:26', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 44),
+(73, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:36:39', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(74, 'mfnovriansyah@gmail.com', 0, '2019-11-25 09:36:39', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(75, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:38:05', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(76, 'mfnovriansyah@gmail.com', 0, '2019-11-25 09:38:05', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(77, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:41:39', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 0),
+(78, 'mfnovriansyah@gmail.com', 0, '2019-11-25 09:41:39', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 0),
+(79, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:54:25', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 38),
+(80, 'mfnovriansyah@gmail.com', 1, '2019-11-25 09:54:25', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 38),
+(81, 'mfnovriansyah@gmail.com', 1, '2019-11-25 10:24:26', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 46),
+(82, 'mfnovriansyah@gmail.com', 1, '2019-11-25 10:24:26', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 46),
+(83, 'mfnovriansyah@gmail.com', 1, '2019-11-25 10:26:43', 'Penambahan Surat Baru yang disetujui', 'Surat telah ditambahkan dan disetujui', 38),
+(84, 'mfnovriansyah@gmail.com', 1, '2019-11-25 10:26:43', 'Pengajuan Surat Baru', 'Selamat surat pengajuan permohonan Anda telah disetujui, Anda dapat melanjutakan proses ini ke tahap selanjutnya.', 38),
+(85, 'System', 0, '0000-00-00 00:00:00', 'Surat dengan nomor7/123/belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(86, 'System', 0, '0000-00-00 00:00:00', 'Surat dengan nomor2/123/444belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(87, 'System', 0, '0000-00-00 00:00:00', 'Surat dengan nomor7/123/belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(88, 'System', 0, '0000-00-00 00:00:00', 'Surat dengan nomor2/123/444belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(89, 'System', 0, '2019-12-04 00:04:11', 'Surat dengan nomor7/123/belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(90, 'System', 0, '2019-12-04 00:04:13', 'Surat dengan nomor2/123/444belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(91, 'System', 0, '2019-12-04 00:04:20', 'Surat dengan nomor7/123/belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(92, 'System', 0, '2019-12-04 00:04:22', 'Surat dengan nomor2/123/444belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(93, 'System', 0, '2019-12-04 00:10:39', 'Surat dengan nomor 2/123/444 belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(94, 'mfnovriansyah@gmail.com', 1, '2019-12-04 00:59:56', 'Surat dengan nomor 8/123/ telah ditambahkan dan telah disetujui', 'Penambahan  Baru yang disetujui', 38),
+(95, 'mfnovriansyah@gmail.com', 1, '2019-12-04 00:59:56', 'Pengajuan Surat  Baru Disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 8/123/ telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 38),
+(96, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:01:26', 'Surat dengan nomor 9/123/ telah ditambahkan dan telah disetujui', 'Penambahan  Baru yang disetujui', 38),
+(97, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:01:26', 'Pengajuan Surat  Baru Disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 9/123/ telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 38),
+(98, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:04:19', 'Surat dengan nomor 10/123/ telah ditambahkan dan telah disetujui', 'Penambahan Surat KP Baru yang disetujui', 38),
+(99, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:04:19', 'Pengajuan Surat Surat KP Baru Disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 10/123/ telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 38),
+(100, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:07:13', 'Penambahan Surat KP baru dengan nomor 10/123/  telah disetujui', 'Surat dengan nomor 10/123/ telah ditambahkan dan telah disetujui', 38),
+(101, 'mfnovriansyah@gmail.com', 1, '2019-12-04 01:07:13', 'Pengajuan Surat Surat KP Baru Disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 10/123/ telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 38),
+(102, 'mfnovriansyah@gmail.com', 1, '2019-12-04 02:18:53', 'Penambahan Surat KP baru dengan nomor 10/123/ telah disetujui', 'Surat dengan nomor 10/123/ telah ditambahkan dan telah disetujui', 0),
+(103, 'mfnovriansyah@gmail.com', 0, '2019-12-04 02:18:53', 'Pengajuan Surat Surat KP baru dengan nomor 10/123/ telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 10/123/ telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 0),
+(104, 'System', 0, '2019-12-04 03:21:46', 'Surat dengan nomor 1/12312323/ belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(105, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:09:39', 'Penambahan Surat KP baru dengan nomor 1aaa telah disetujui', 'Surat dengan nomor 1aaa telah ditambahkan dan telah disetujui', 53),
+(106, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:09:39', 'Pengajuan Surat Surat KP baru dengan nomor 1aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 1aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 53),
+(107, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:11:40', 'Penambahan Surat KP baru dengan nomor 2aaa telah disetujui', 'Surat dengan nomor 2aaa telah ditambahkan dan telah disetujui', 53),
+(108, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:11:40', 'Pengajuan Surat Surat KP baru dengan nomor 2aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 2aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 53),
+(109, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:12:35', 'Penambahan Surat KP baru dengan nomor 3aaa telah disetujui', 'Surat dengan nomor 3aaa telah ditambahkan dan telah disetujui', 53),
+(110, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:12:35', 'Pengajuan Surat Surat KP baru dengan nomor 3aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 3aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 53),
+(111, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:19:29', 'Penambahan Surat KP baru dengan nomor 4aaa telah disetujui', 'Surat dengan nomor 4aaa telah ditambahkan dan telah disetujui', 53),
+(112, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:19:29', 'Pengajuan Surat Surat KP baru dengan nomor 4aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 4aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 53),
+(113, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:25:23', 'Penambahan Surat KP baru dengan nomor 5aaa telah disetujui', 'Surat dengan nomor 5aaa telah ditambahkan dan telah disetujui', 53),
+(114, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:25:23', 'Pengajuan Surat Surat KP baru dengan nomor 5aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 5aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 53),
+(115, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:36:16', 'Penambahan Surat KP baru dengan nomor 5aaa telah disetujui', 'Surat dengan nomor 5aaa telah ditambahkan dan telah disetujui', 0),
+(116, 'mfnovriansyah@gmail.com', 0, '2019-12-04 04:36:16', 'Pengajuan Surat Surat KP baru dengan nomor 5aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 5aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 0),
+(117, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:37:14', 'Penambahan Surat KP baru dengan nomor 5aaa telah disetujui', 'Surat dengan nomor 5aaa telah ditambahkan dan telah disetujui', 0),
+(118, 'mfnovriansyah@gmail.com', 0, '2019-12-04 04:37:14', 'Pengajuan Surat Surat KP baru dengan nomor 5aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 5aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 0),
+(119, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:38:00', 'Penambahan Surat KP baru dengan nomor 5aaa telah disetujui', 'Surat dengan nomor 5aaa telah ditambahkan dan telah disetujui', 0),
+(120, 'mfnovriansyah@gmail.com', 0, '2019-12-04 04:38:00', 'Pengajuan Surat Surat KP baru dengan nomor 5aaa telah disetujui', 'Selamat surat pengajuan permohonan Anda dengan nomor 5aaa telah disetujui, Anda dapat melanjutkan proses ini ke tahap selanjutnya.', 0),
+(121, '', 1, '0000-00-00 00:00:00', 'Pengajuan Surat Ditolak', 'Maaf, surat pengajuan permohonan Anda belum dapat kami setujui', 53),
+(122, '', 1, '0000-00-00 00:00:00', 'Pengajuan Surat Ditolak', 'Maaf, surat pengajuan permohonan Anda belum dapat kami setujui dengan catatan yaaaa.', 53),
+(123, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:53:34', 'Pengajuan Surat Ditolak', 'Maaf, surat pengajuan permohonan Anda belum dapat kami setujui dengan catatan yaaaa.', 53),
+(124, 'mfnovriansyah@gmail.com', 192, '2019-12-04 04:58:01', 'Pengajuan Surat KP dengan nomor 1/123/KP Berhasil', 'Surat pengajuan permohonan Anda dengan nomor 1/123/KP telah dikirim, mohon tunggu jawaban surat disetujui atau ditolak.', 55),
+(125, 'mfnovriansyah@gmail.com', 1, '2019-12-04 04:58:01', 'Ada Penganjuan Surat KP baru dengan nomor 1/123/KP', 'Anda memiliki surat pengajuan permohonan dengan nomor 1/123/KP, harap berikan tanggapan disetujui atau ditolak.', 55),
+(126, 'System', 0, '2019-12-04 04:58:49', 'Surat dengan nomor 1/123/KP belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(127, 'System', 0, '2019-12-04 05:03:05', 'Surat dengan nomor 1/123/KP belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(128, 'System', 0, '2019-12-04 05:04:24', 'Surat dengan nomor 1/123/KP belum diberikan keputusan lebih dari 3 hari. Mohon segera berikan keputusan.', 'Ada Pengajuan Surat (lebih dari 3 hari)', 0),
+(129, 'mfnovriansyah@gmail.com', 192, '2019-12-04 05:05:58', 'Pengajuan Surat Ditolak', 'Maaf, surat pengajuan permohonan Anda belum dapat kami setujui dengan catatan OK.', 55),
+(130, 'mfnovriansyah@gmail.com', 192, '2019-12-04 05:06:52', 'Pengajuan Surat Ditolak', 'Maaf, surat pengajuan permohonan Anda belum dapat kami setujui dengan catatan OK.', 55);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `name` varchar(80) NOT NULL COMMENT 'dari SSO',
+  `gelar_depan` varchar(80) NOT NULL,
+  `gelar_belakang` varchar(80) NOT NULL,
+  `NIP` varchar(80) NOT NULL,
+  `username` varchar(50) NOT NULL COMMENT 'dari SSO',
+  `email` varchar(50) NOT NULL,
+  `password` varchar(80) NOT NULL COMMENT 'tidak kepake, krn kita pake SSO',
+  `status` varchar(10) NOT NULL COMMENT 'new: baru pertama login (minta dia lengkapi email), active: sudah lengkapi email, inactive: sudah input email tapi hanya bisa operasi READ',
+  `created` timestamp NULL DEFAULT NULL,
+  `role_SSO` varchar(15) NOT NULL COMMENT 'dari SSO',
+  `role` enum('admin','dosen','mahasiswa','staff','others') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='how to get NPM & NIP';
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `gelar_depan`, `gelar_belakang`, `NIP`, `username`, `email`, `password`, `status`, `created`, `role_SSO`, `role`) VALUES
+(1, 'Demo Admin', '', '', '', 'demo', 'mfnovriansyah@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', 'active', '2017-06-26 14:37:16', '', 'admin'),
+(8, 'Ruki Harwahyu', 'Dr.', 'ST. MT. MSc.', '100120910231409000', 'ruki.h', 'ruki.h@ui.ac.id', '', 'new', '2019-05-10 01:43:47', 'staff', 'dosen'),
+(9, 'Riarno Hidayat', 'Ir', '', '40603057', '', '', '', 'active', NULL, 'staff', 'dosen'),
+(99, 'Purnomo Sidi Priambodo', 'Ir.', 'M.Sc., Ph.D.', '407050192', '407050192', '', '', 'active', NULL, 'staff', 'dosen'),
+(100, 'Iwan Krisnadi', 'Dr. Ir.', 'MBA', '40803034', '40803034', '', '', 'active', NULL, 'staff', 'dosen'),
+(101, 'Rochmah N Sukardi Ny', 'Ir', 'MSc', '40903050', '40903050', '', '', 'active', NULL, 'staff', 'dosen'),
+(102, 'Zuhal', 'Prof. Dr. Ir.', 'MSc., EE.', '40903051', '40903051', '', '', 'active', NULL, 'staff', 'dosen'),
+(103, 'Arnold PH Djiwatampu', 'Ir', 'IPM.', '40913005', '40913005', '', '', 'active', NULL, 'staff', 'dosen'),
+(104, 'Djoko Hartanto', 'Prof. Dr. Ir.', 'M.Sc', '41103035', '41103035', '', '', 'active', NULL, 'staff', 'dosen'),
+(105, 'Bagio Budiardjo', 'Prof. Dr. Ir.', 'MSc.', '41103036', '41103036', '', '', 'active', NULL, 'staff', 'dosen'),
+(106, 'Tarki Dendi', '', '', '49013006', '49013006', '', '', 'active', NULL, 'staff', 'dosen'),
+(107, 'Sardy S.', 'Prof. Dr. Ir.', 'M.Eng.Sc.', '194208051975011000', '194208051975011000', '', '', 'active', NULL, 'staff', 'dosen'),
+(108, 'Hartono Haryadi', 'Ir.', 'M. Phil', '194410291975011000', '194410291975011000', '', '', 'active', NULL, 'staff', 'dosen'),
+(109, 'Arman D. Diponegoro', 'Dr. Ir.', '', '194811131985031000', '194811131985031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(110, 'Harry Sudibyo', 'Prof. Dr. Ir.', 'DEA', '195212311980111000', '195212311980111000', '', '', 'active', NULL, 'staff', 'dosen'),
+(111, 'Rudy Setiabudy', 'Prof.Dr. Ir.', 'DEA', '195410071984031000', '195410071984031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(112, 'Rinaldy Dalimi', 'Prof.Ir.', 'M.Sc.Ph.D', '195604241985031000', '195604241985031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(113, 'Amien Rahardjo', 'Ir.', 'MT.', '195706221985031000', '195706221985031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(114, 'Sri Rejeki', 'Ir', 'Dipl.Ing.', '195710041986022000', '195710041986022000', '', '', 'active', NULL, 'staff', 'dosen'),
+(115, 'Pudji Kartono', '', 'S.Sos', '195712131979031000', '195712131979031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(116, 'Eko Tjipto Rahardjo', 'Prof. Dr. Ir.', 'M.Sc', '195804221982031000', '195804221982031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(117, 'Endang Sriningsih', 'Ir.', 'MT, Si', '41303006', '41303006', '', '', 'active', NULL, 'staff', 'dosen'),
+(119, 'Eko Adhi Setiawan', 'Dr.', '', '40803032', '40803032', '', '', 'active', NULL, 'staff', 'dosen'),
+(120, 'Djamhari Sirat', 'Prof. Ir.', 'M.Sc., Ph.D', '41203015', '41203015', '', '', 'active', NULL, 'staff', 'dosen'),
+(121, 'Basari', 'Dr.', 'ST. MEng.', '197911032012121000', '197911032012121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(122, 'Benyamin Kusumoputro', 'Prof. Drs.', 'MEng., Dr.Eng.', '195711171987031000', '195711171987031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(123, 'Yan Maraden', '', 'ST. MSc.', '100140310211100000', '100140310211100000', '', '', 'active', NULL, 'staff', 'dosen'),
+(124, 'I Gde Dharma Nugraha', '', 'ST. MT.', '100120310270012000', '100120310270012000', '', '', 'active', NULL, 'staff', 'dosen'),
+(125, 'Taufiq Alif Kurniawan', '', 'ST. MSc.', '100120310242807000', '100120310242807000', '', '', 'active', NULL, 'staff', 'dosen'),
+(126, 'Agus R. Utomo', 'Ir', 'MT', '195808201986021000', '195808201986021000', '', '', 'active', NULL, 'staff', 'dosen'),
+(127, 'Dadang Gunawan', 'Prof. Dr. Ir.', 'M.Eng', '195810141985031000', '195810141985031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(128, 'I Made Ardita Y', 'Ir.', 'MT', '195907051986021000', '195907051986021000', '', '', 'active', NULL, 'staff', 'dosen'),
+(129, 'Anak Agung Putri Ratna', 'Dr. Ir.', 'M.Eng', '196104241989032000', '196104241989032000', '', '', 'active', NULL, 'staff', 'dosen'),
+(130, 'Iwa Garniwa M K', 'Prof. Dr. Ir.', 'MT', '196105071989031000', '196105071989031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(131, 'Dodi Sudiana', 'Dr. Ir.', 'M.Eng.', '196601081991031000', '196601081991031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(132, 'Feri Yusivar', 'Dr. Ir.', 'M.Eng', '196710081994031000', '196710081994031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(133, 'Gunawan Wibisono', 'Ir.', 'M.Sc, Ph.D', '196602221991031000', '196602221991031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(134, 'Aji Nur Widyanto', 'Dr.', 'ST.MT.', '198209272012121000', '198209272012121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(135, 'Nji Raden Poespawati', 'Prof. Dr.Ir', 'MT., IPM', '196101241986022000', '196101241986022000', '', '', 'active', NULL, 'staff', 'dosen'),
+(136, 'Catur Apriono', 'Dr.', 'ST.MT.Ph.D', '100111610250017000', '100111610250017000', '', '', 'active', NULL, 'staff', 'dosen'),
+(137, 'Ridwan Gunawan', 'Dr. Ir.', 'MT', '41603017', '41603017', '', '', 'active', NULL, 'staff', 'dosen'),
+(138, 'Filbert Hilman Juwono', 'Dr.', 'S.T., M.T.', '40903028', '40903028', '', '', 'active', NULL, 'staff', 'dosen'),
+(139, 'Muhammad Suryanegara', 'Dr.', 'ST., M.Sc., IPM', '198105142012121000', '198105142012121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(140, 'Chairul Hudaya', 'Ir.', 'ST, M.Eng.,Ph.D,IPM', '40903027', '40903027', '', '', 'active', NULL, 'staff', 'dosen'),
+(141, 'Arifin Djauhari', 'Ir.', 'MT', '41403020', '41403020', '', '', 'active', NULL, 'staff', 'dosen'),
+(142, 'Muhammad Asvial', 'Dr. Ir.', 'M.Eng', '196804061994031000', '196804061994031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(143, 'F. Astha Ekadiyanto', '', 'ST, M.Sc.', '197210041997021000', '197210041997021000', '', '', 'active', NULL, 'staff', 'dosen'),
+(144, 'Agus Santoso Tamsir', 'Dr. Ir.', 'MT', '195908011989031000', '195908011989031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(145, 'Mia Rizkinia', 'Dr.Eng', 'ST.MT.', '100220310231507000', '100220310231507000', '', '', 'active', NULL, 'staff', 'dosen'),
+(146, 'Wahidin Wahab', 'Ir', 'MSc, PhD', '41903003', '41903003', '', '', 'active', NULL, 'staff', 'dosen'),
+(147, 'Kalamullah Ramli', 'Prof. Dr. Ir.', 'M.Eng', '196807151994031000', '196807151994031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(148, 'Abdul Muis', 'Dr.', 'ST, M.Eng,', '197509011999031000', '197509011999031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(149, 'Aries Subiantoro', 'Dr. Ir.', 'M. SEE', '197003311995121000', '197003311995121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(150, 'Soepranyoto', 'Ir.', 'MSc.', '41403006', '41403006', '', '', 'active', NULL, 'staff', 'dosen'),
+(151, 'Denny Setiawan', 'Dr.', 'ST., MT.', '41303022', '41303022', '', '', 'active', NULL, 'staff', 'dosen'),
+(152, 'Fajardhani', 'Ir.', 'MBA', '40803013', '40803013', '', '', 'active', NULL, 'staff', 'dosen'),
+(153, 'Alfan Persekal', '', 'ST, MSc.', '100120910202501000', '100120910202501000', '', '', 'active', NULL, 'staff', 'dosen'),
+(154, 'Anwar Soefi Ibrahim', 'Drs.', 'M.Eng.Sc.', '111303002', '111303002', '', '', 'active', NULL, 'staff', 'dosen'),
+(155, 'Ardiansyah', '', 'ST., MEng.', '41403026', '41403026', '', '', 'active', NULL, 'staff', 'dosen'),
+(156, 'Muhammad Salman', 'Dr', 'ST., MIT', '196903291997031000', '196903291997031000', '', '', 'active', NULL, 'staff', 'dosen'),
+(157, 'Boma Anantasatya Adhi', '', 'ST.,MT', '41303023', '41303023', '', '', 'active', NULL, 'staff', 'dosen'),
+(158, 'Muhammad Firdaus Syawalludin Lubis', '', 'ST,MT', '41303024', '41303024', '', '', 'active', NULL, 'staff', 'dosen'),
+(159, 'Siti Fauziyah Rahman', '', 'ST.,  M.Eng., Ph.D', '100220910271708000', '100220910271708000', '', '', 'active', NULL, 'staff', 'dosen'),
+(160, 'Arief Noor Rahman', '', 'ST. MSc.', '41503015', '41503015', '', '', 'active', NULL, 'staff', 'dosen'),
+(161, 'Ajib Setyo Arifin', '', 'ST.MT.Ph.D', '198612202015041000', '198612202015041000', '', '', 'active', NULL, 'staff', 'dosen'),
+(162, 'Ratno Nuryadi', 'Prof.Dr.', 'M.Eng', '40903052', '40903052', '', '', 'active', NULL, 'staff', 'dosen'),
+(163, 'Retno Wigajatri P.', 'Dr. Ir', 'MT', '196203231987032000', '196203231987032000', '', '', 'active', NULL, 'staff', 'dosen'),
+(164, 'Victor Widiputra', '', 'ST, MT.', '41603001', '41603001', '', '', 'active', NULL, 'staff', 'dosen'),
+(165, 'Boy Subirosa Sabarguna', 'Dr. dr.', 'MARS.', '195810121984101000', '195810121984101000', '', '', 'active', NULL, 'staff', 'dosen'),
+(166, 'Dwi Riana Aryani', '', 'ST. M.Sc.', '41803016', '41803016', '', '', 'active', NULL, 'staff', 'dosen'),
+(167, 'Arief Udhiarto', 'Dr.Eng.', 'S.T.,M.T., IPM', '197904022008121000', '197904022008121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(168, 'Tomy Abuzairi', 'Dr.', 'S.T., M.Sc, PhD.', '100140310203217000', '100140310203217000', '', '', 'active', NULL, 'staff', 'dosen'),
+(169, 'Victor Widiputra', '', 'ST. MT.', '3001', '3001', '', '', 'active', NULL, 'staff', 'dosen'),
+(170, 'Cholid Badri', 'Prof. Dr. dr.', 'SpRad(K)Onk.Rad.', '110903020', '110903020', '', '', 'active', NULL, 'staff', 'dosen'),
+(171, 'Muhammad Rezal', 'dr.', 'M.T.', '110903093', '110903093', '', '', 'active', NULL, 'staff', 'dosen'),
+(172, 'Ahyahudin Sodri', '', 'S.T., M.Sc.', '111003047', '111003047', '', '', 'active', NULL, 'staff', 'dosen'),
+(173, 'Atik Heru Maryanti', '', 'S.T., S.E.Ak., MBA.', '111203018', '111203018', '', '', 'active', NULL, 'staff', 'dosen'),
+(174, 'Irzan Nurman Djaenalmutaqin', 'dr.', 'M.Si.', '110903110', '110903110', '', '', 'active', NULL, 'staff', 'dosen'),
+(175, 'Ajeng Pramastuty', '', 'ST. M.Si.', '111603023', '111603023', '', '', 'active', NULL, 'staff', 'dosen'),
+(176, 'Diyanatul Husna', '', 'ST.MT.', '41703002', '41703002', '', '', 'active', NULL, 'staff', 'dosen'),
+(177, 'Yohan Suryanto', 'Dr.', 'ST.MT.', '41603003', '41603003', '', '', 'active', NULL, 'staff', 'dosen'),
+(178, 'Uno Bintang Sudibyo', 'Dr. Ir.', 'DEA, IPM', '41203020', '41203020', '', '', 'active', NULL, 'staff', 'dosen'),
+(179, 'Akhmad Faqih', '', 'ST. MT.', '41803017', '41803017', '', '', 'active', NULL, 'staff', 'dosen'),
+(180, 'Prima Dewi Purnamasari', 'Dr.', 'ST., MT., MSc.', '198407132008122000', '198407132008122000', '', '', 'active', NULL, 'staff', 'dosen'),
+(181, 'Budi Sudiarto', 'Dr.-Ing', 'ST, MT', '197907312008121000', '197907312008121000', '', '', 'active', NULL, 'staff', 'dosen'),
+(182, 'Ihsan Ibrahim', '', 'S.T., M.T', '41903002', '41903002', '', '', 'active', NULL, 'staff', 'dosen'),
+(183, 'Fitri Yuli Zulkifli', 'Prof. Dr. Ir.', 'ST. M.Sc, IPM', '197407191998022000', '197407191998022000', '', '', 'active', NULL, 'staff', 'dosen'),
+(184, 'Riri Fitri Sari', 'Prof. Dr. Ir', 'M.Sc, MM, IPU', '197007071995012000', '197007071995012000', '', '', 'active', NULL, 'staff', 'dosen'),
+(185, 'Fauzan Hanif', '', 'ST, MEng.', '41903007', '41903007', '', '', 'active', NULL, 'staff', 'dosen'),
+(187, 'Faiz Husnayain', '', 'ST. MSc.', '100120910250608000', '100120910250608000', '', '', 'active', NULL, 'staff', 'dosen'),
+(191, 'Abdul Halim', 'Dr.', 'M.Eng.', '040803012', 'a.halim', 'a.halim@ui.ac.id', '', 'new', '2019-09-19 05:42:37', 'staff', 'dosen'),
+(192, 'Demo User', '', '', '', 'user', 'mfnovriansyah@gmail.com', 'e10adc3949ba59abbe56e057f20f883e', 'active', '2017-06-26 14:37:16', '', 'dosen'),
+(193, 'Demo Admin', '', '', '', 'demo123', 'nfahriza@yahoo.com', 'e10adc3949ba59abbe56e057f20f883e', 'active', '2017-06-26 14:37:16', '', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user_jabatan`
+--
+
+CREATE TABLE `user_jabatan` (
+  `id` int(11) NOT NULL,
+  `jabatan` varchar(160) NOT NULL,
+  `user` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `user_jabatan`
+--
+
+INSERT INTO `user_jabatan` (`id`, `jabatan`, `user`) VALUES
+(1, 'Kepala Departemen Teknik Elektro', 149),
+(2, 'Sekretaris Departemen', 118),
+(3, 'Kepala Lab. Jaringan', 156),
+(4, 'Kepala Lab. Elektronika', 168),
+(5, 'Kepala Lab. Telekomunikasi', 161),
+(6, 'Manajer Ventura DTE', 181),
+(7, 'PJ Transfer SKS 1', 168),
+(8, 'PJ Transfer SKS 2', 136),
+(9, 'PJ Transfer SKS 3', 8),
+(10, 'Koordinator MK Khusus', 8),
+(11, 'Koordinator MONEV Publikasi', 136);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `keterangan`
+--
+ALTER TABLE `keterangan`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `keterangan_jenis`
+--
+ALTER TABLE `keterangan_jenis`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `log_surat`
+--
+ALTER TABLE `log_surat`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
+
+--
+-- Indexes for table `user_jabatan`
+--
+ALTER TABLE `user_jabatan`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `keterangan`
+--
+ALTER TABLE `keterangan`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+
+--
+-- AUTO_INCREMENT for table `keterangan_jenis`
+--
+ALTER TABLE `keterangan_jenis`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+
+--
+-- AUTO_INCREMENT for table `log_surat`
+--
+ALTER TABLE `log_surat`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=131;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+
+--
+-- AUTO_INCREMENT for table `user_jabatan`
+--
+ALTER TABLE `user_jabatan`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -1,0 +1,3 @@
+solved untuk masalah
+set relation dan change fields dipakai bersama
+http://www.grocerycrud.com/forums/topic/3735-workaround-conflict-hidden-field-and-set-relation/

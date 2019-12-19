@@ -1,0 +1,4 @@
+Jelaskan yang dimaksud dengan 'soft handover' dan 'hard handover' pada jaringan telekomunikasi selular.
+Jelaskan yang dimaksud dengan layanan Enhanced Mobile Broadband pada jaringan 5G.
+Jelaskan yang dimaksud dengan layanan Massive MTC pada jaringan 5G.
+Jelaskan yang dimaksud dengan layanan Ultra Reliable Low Latency Communication (URLLC) pada jaringan 5G.
